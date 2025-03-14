@@ -63,7 +63,7 @@ jobs:
           az deployment group create \
             --resource-group $RESOURCE_GROUP \
             --template-file ./arm-templates/identity.json \
-            --parameters @$PARAMS_FILE || exit 1
+            --parameters @$PARAMS_FILE || exit 1 
 
       - name: Deploy Security Policies
         run: |
