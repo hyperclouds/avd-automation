@@ -18,6 +18,7 @@ jobs:
       RESOURCE_GROUP: "AVD-LandingZone-RG"
       LOCATION: "westeurope"
       PARAMS_FILE: "./arm-templates/parameters.json"
+      LOG_ANALYTICS_WORKSPACE: "AVD-Monitor-Workspace"
 
     steps:
       - name: Checkout Repository
@@ -63,14 +64,14 @@ jobs:
           az deployment group create \
             --resource-group $RESOURCE_GROUP \
             --template-file ./arm-templates/identity.json \
-            --parameters @$PARAMS_FILE || exit 1 
+            --parameters @$PARAMS_FILE || exit 1
 
       - name: Deploy Security Policies
         run: |
           echo "Deploying Security Policies..."
           LOG_ANALYTICS_ID=$(az resource show \
             --resource-group $RESOURCE_GROUP \
-            --name AVD-Monitor-Workspace \
+            --name $LOG_ANALYTICS_WORKSPACE \
             --resource-type "Microsoft.OperationalInsights/workspaces" \
             --query id --output tsv)
 
