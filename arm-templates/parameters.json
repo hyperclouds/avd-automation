@@ -1,40 +1,24 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "location": {
-        "value": "westeurope"
-      },
-      "storageAccountName": {
-        "value": "fslogixstorageavd"
-      },
-      "shareName": {
-        "value": "fslogixprofiles"
-      },
-      "vnetName": {
-        "value": "avd-vnet"
-      },
-      "sessionHostsSubnet": {
-        "value": "10.0.1.0/24"
-      },
-      "fslogixSubnet": {
-        "value": "10.0.2.0/24"
-      },
-      "aadDomainName": {
-        "value": "contoso.com"
-      },
-      "adminUsername": {
-        "value": "AVDAdmin"
-      },
-      "adminObjectId": {
-        "value": "REPLACE_WITH_ADMIN_OBJECT_ID"
-      },
-      "rbacRole": {
-        "value": "Virtual Machine Administrator Login"
-      },
-      "logAnalyticsWorkspaceName": {
-        "value": "AVD-Monitor-Workspace"
-      }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "westeurope"
+    },
+    "vnetName": {
+      "value": "avd-vnet"
+    },
+    "sessionHostsSubnetName": {
+      "value": "sessionHostsSubnet"
+    },
+    "fslogixSubnetName": {
+      "value": "fslogixSubnet"
+    },
+    "storageAccountName": {
+      "value": "fslogixstorageavd"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "AVD-Monitor-Workspace"
     }
   }
-  
+}
