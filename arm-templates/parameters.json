@@ -17,6 +17,18 @@
     "storageAccountName": {
       "value": "fslogixstorageavd"
     },
+    "aadDomainName": {
+      "value": "contoso.com"
+    },
+    "adminUsername": {
+      "value": "AVDAdmin"
+    },
+    "adminObjectId": {
+      "value": "REPLACE_WITH_ADMIN_OBJECT_ID"
+    },
+    "rbacRole": {
+      "value": "Virtual Machine Administrator Login"
+    },
     "logAnalyticsWorkspaceName": {
       "value": "AVD-Monitor-Workspace"
     }
