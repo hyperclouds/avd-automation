@@ -1,0 +1,89 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "location": {
+        "type": "string"
+      },
+      "vnetName": {
+        "type": "string"
+      },
+      "sessionHostsSubnetName": {
+        "type": "string"
+      },
+      "fslogixSubnetName": {
+        "type": "string"
+      },
+      "storageAccountName": {
+        "type": "string"
+      },
+      "identityName": {
+        "type": "string"
+      },
+      "rbacRole": {
+        "type": "string"
+      }
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Network/virtualNetworks",
+        "apiVersion": "2021-02-01",
+        "name": "[parameters('vnetName')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": ["10.0.0.0/16"]
+          },
+          "subnets": [
+            {
+              "name": "[parameters('sessionHostsSubnetName')]",
+              "properties": {
+                "addressPrefix": "10.0.1.0/24"
+              }
+            },
+            {
+              "name": "[parameters('fslogixSubnetName')]",
+              "properties": {
+                "addressPrefix": "10.0.2.0/24"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Microsoft.Storage/storageAccounts",
+        "apiVersion": "2022-05-01",
+        "name": "[parameters('storageAccountName')]",
+        "location": "[parameters('location')]",
+        "sku": {
+          "name": "Premium_LRS"
+        },
+        "kind": "StorageV2",
+        "properties": {
+          "supportsHttpsTrafficOnly": true,
+          "minimumTlsVersion": "TLS1_2"
+        }
+      },
+      {
+        "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+        "apiVersion": "2023-01-01",
+        "name": "[parameters('identityName')]",
+        "location": "[parameters('location')]",
+        "properties": {}
+      },
+      {
+        "type": "Microsoft.Authorization/roleAssignments",
+        "apiVersion": "2020-04-01-preview",
+        "name": "[guid(parameters('identityName'), parameters('rbacRole'))]",
+        "properties": {
+          "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRole'))]",
+          "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName')), '2023-01-01').principalId]",
+          "scope": "[resourceGroup().id]"
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName'))]"
+        ]
+      }
+    ]
+  }
+  

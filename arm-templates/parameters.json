@@ -5,23 +5,8 @@
     "location": {
       "value": "westeurope"
     },
-    "identityName": {
-      "value": "AVDAdminIdentity"
-    },
-    "aadDomainName": {
-      "value": "hyperclouds.nl"
-    },
-    "adminUsername": {
-      "value": "AVDAdmin"
-    },
-    "adminObjectId": {
-      "value": "REPLACE_WITH_ADMIN_OBJECT_ID"
-    },
-    "rbacRole": {
-      "value": "Virtual Machine Administrator Login"
-    },
     "vnetName": {
-      "value": "avd-vnet"
+      "value": "HC-AVD-VNET"
     },
     "sessionHostsSubnetName": {
       "value": "sessionHostsSubnet"
@@ -31,6 +16,12 @@
     },
     "storageAccountName": {
       "value": "fslogixstorageavd"
+    },
+    "identityName": {
+      "value": "AVDAdminIdentity"
+    },
+    "rbacRole": {
+      "value": "Virtual Machine Administrator Login"
     },
     "logAnalyticsWorkspaceName": {
       "value": "AVD-Monitor-Workspace"

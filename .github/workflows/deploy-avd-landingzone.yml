@@ -15,10 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RESOURCE_GROUP: "AVD-LandingZone-RG"
       LOCATION: "westeurope"
       PARAMS_FILE: "./arm-templates/parameters.json"
-      LOG_ANALYTICS_WORKSPACE: "AVD-Monitor-Workspace"
+      RG_AVD: "HC-AVD-RG01"
+      RG_VNET: "HC-AVDVNET-RG01"
+      RG_IMG: "HC-AVDIMG-RG01"
+      RG_STORAGE: "HC-AVDSTORAGE-RG01"
+      RG_MONITOR: "HC-AVDMON-RG01"
 
     steps:
       - name: Checkout Repository
@@ -29,66 +32,23 @@ jobs:
         with:
           creds: ${{ secrets.LANDINGZONE }}
 
-      - name: Create Resource Group
+      - name: Create Resource Groups
         run: |
-          echo "Creating Resource Group..."
-          az group create --name $RESOURCE_GROUP --location $LOCATION || exit 1
+          echo "Creating Resource Groups..."
+          az group create --name $RG_AVD --location $LOCATION || exit 1
+          az group create --name $RG_VNET --location $LOCATION || exit 1
+          az group create --name $RG_IMG --location $LOCATION || exit 1
+          az group create --name $RG_STORAGE --location $LOCATION || exit 1
+          az group create --name $RG_MONITOR --location $LOCATION || exit 1
 
-      - name: Deploy Managed Identity
+      - name: Deploy Landing Zone Resources
         run: |
-          echo "Deploying Managed Identity..."
+          echo "Deploying Landing Zone Resources..."
           az deployment group create \
-            --resource-group $RESOURCE_GROUP \
-            --template-file ./arm-templates/identity.json \
-            --parameters @$PARAMS_FILE || exit 1
-
-      - name: Deploy Networking
-        run: |
-          echo "Deploying Networking..."
-          az deployment group create \
-            --resource-group $RESOURCE_GROUP \
-            --template-file ./arm-templates/networking.json \
-            --parameters @$PARAMS_FILE || exit 1
-
-      - name: Deploy Storage for FSLogix
-        run: |
-          echo "Deploying Storage..."
-          az deployment group create \
-            --resource-group $RESOURCE_GROUP \
-            --template-file ./arm-templates/storage.json \
-            --parameters @$PARAMS_FILE || exit 1
-
-      - name: Deploy Identity & Security
-        run: |
-          echo "Deploying Identity & Security..."
-          az deployment group create \
-            --resource-group $RESOURCE_GROUP \
-            --template-file ./arm-templates/identity.json \
-            --parameters @$PARAMS_FILE || exit 1
-
-      - name: Deploy Security Policies
-        run: |
-          echo "Deploying Security Policies..."
-          LOG_ANALYTICS_ID=$(az resource show \
-            --resource-group $RESOURCE_GROUP \
-            --name $LOG_ANALYTICS_WORKSPACE \
-            --resource-type "Microsoft.OperationalInsights/workspaces" \
-            --query id --output tsv)
-
-          az deployment group create \
-            --resource-group $RESOURCE_GROUP \
-            --template-file ./arm-templates/security.json \
-            --parameters @$PARAMS_FILE \
-            --parameters logAnalyticsWorkspaceId=$LOG_ANALYTICS_ID || exit 1
-
-      - name: Deploy Monitoring
-        run: |
-          echo "Deploying Monitoring..."
-          az deployment group create \
-            --resource-group $RESOURCE_GROUP \
-            --template-file ./arm-templates/monitoring.json \
+            --resource-group $RG_VNET \
+            --template-file ./arm-templates/landingzone.json \
             --parameters @$PARAMS_FILE || exit 1
 
       - name: Confirm Deployment
         run: |
-          echo "✅ AVD Landing Zone deployment complete!"
+          echo "AVD Landing Zone deployment complete!"
