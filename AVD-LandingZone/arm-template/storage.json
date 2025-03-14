@@ -1,0 +1,117 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]",
+        "metadata": {
+          "description": "Location for storage account deployment"
+        }
+      },
+      "storageAccountName": {
+        "type": "string",
+        "defaultValue": "fslogixstorageavd",
+        "metadata": {
+          "description": "Unique name for the storage account"
+        }
+      },
+      "storageSku": {
+        "type": "string",
+        "defaultValue": "Premium_LRS",
+        "metadata": {
+          "description": "Storage SKU (Premium_LRS recommended for FSLogix performance)"
+        }
+      },
+      "shareName": {
+        "type": "string",
+        "defaultValue": "fslogixprofiles",
+        "metadata": {
+          "description": "Name of the Azure Files share for FSLogix profiles"
+        }
+      },
+      "vnetName": {
+        "type": "string",
+        "metadata": {
+          "description": "The Virtual Network name for private endpoint connectivity"
+        }
+      },
+      "subnetId": {
+        "type": "string",
+        "metadata": {
+          "description": "The Subnet ID where the private endpoint will be deployed"
+        }
+      }
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Storage/storageAccounts",
+        "apiVersion": "2022-05-01",
+        "name": "[parameters('storageAccountName')]",
+        "location": "[parameters('location')]",
+        "sku": {
+          "name": "[parameters('storageSku')]"
+        },
+        "kind": "StorageV2",
+        "properties": {
+          "supportsHttpsTrafficOnly": true,
+          "minimumTlsVersion": "TLS1_2",
+          "networkAcls": {
+            "bypass": "AzureServices",
+            "defaultAction": "Deny",
+            "virtualNetworkRules": [
+              {
+                "id": "[parameters('subnetId')]",
+                "action": "Allow"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+        "apiVersion": "2021-09-01",
+        "name": "[concat(parameters('storageAccountName'), '/default/', parameters('shareName'))]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+        ],
+        "properties": {
+          "accessTier": "TransactionOptimized"
+        }
+      },
+      {
+        "type": "Microsoft.Network/privateEndpoints",
+        "apiVersion": "2021-05-01",
+        "name": "[concat(parameters('storageAccountName'), '-pe')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "subnet": {
+            "id": "[parameters('subnetId')]"
+          },
+          "privateLinkServiceConnections": [
+            {
+              "name": "[concat(parameters('storageAccountName'), '-link')]",
+              "properties": {
+                "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+                "groupIds": [ "file" ]
+              }
+            }
+          ]
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+        ]
+      }
+    ],
+    "outputs": {
+      "storageAccountName": {
+        "type": "string",
+        "value": "[parameters('storageAccountName')]"
+      },
+      "shareName": {
+        "type": "string",
+        "value": "[parameters('shareName')]"
+      }
+    }
+  }
+  
