@@ -5,17 +5,8 @@
     "location": {
       "value": "westeurope"
     },
-    "vnetName": {
-      "value": "avd-vnet"
-    },
-    "sessionHostsSubnetName": {
-      "value": "sessionHostsSubnet"
-    },
-    "fslogixSubnetName": {
-      "value": "fslogixSubnet"
-    },
-    "storageAccountName": {
-      "value": "fslogixstorageavd"
+    "identityName": {
+      "value": "AVDAdminIdentity"
     },
     "aadDomainName": {
       "value": "contoso.com"
@@ -28,6 +19,18 @@
     },
     "rbacRole": {
       "value": "Virtual Machine Administrator Login"
+    },
+    "vnetName": {
+      "value": "avd-vnet"
+    },
+    "sessionHostsSubnetName": {
+      "value": "sessionHostsSubnet"
+    },
+    "fslogixSubnetName": {
+      "value": "fslogixSubnet"
+    },
+    "storageAccountName": {
+      "value": "fslogixstorageavd"
     },
     "logAnalyticsWorkspaceName": {
       "value": "AVD-Monitor-Workspace"
