@@ -16,7 +16,7 @@ jobs:
 
     env:
       RESOURCE_GROUP: "AVD-LandingZone-RG"
-      LOCATION: "eastus"
+      LOCATION: "westeurope"
       PARAMS_FILE: "./arm-templates/parameters.json"
       LOG_ANALYTICS_WORKSPACE: "AVD-Monitor-Workspace"
 
